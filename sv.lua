@@ -2,30 +2,30 @@ ESX = nil
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
+--itemin tyypit on ase tai itemi
+
 local serverii = {
 	asekauppa = {
-		kaupantyyppi = {'ase'},
 		Itemit = {
-			{itemi  = 'WEAPON_KNIFE', hinta = 1000, texti = 'Puukko'}
+			{itemi  = 'WEAPON_KNIFE', hinta = 1000, texti = 'Puukko', tyyppi = 'ase'},
+			{itemi  = 'WEAPON_PISTOL', hinta = 3000, texti = 'Pistooli', tyyppi = 'ase'}
 		},
 		Paikat = {
 			vector3(21.596227645874,-1106.5979003906,29.797023773193)
 		}
 	},
 	itemikauppa = {
-		kaupantyyppi = {'itemi'},
 		Itemit = {
-			{itemi  = 'luotiliivi', hinta = 200,  texti = 'luotiliivi'}
+			{itemi  = 'luotiliivi', hinta = 200,  texti = 'luotiliivi', tyyppi = 'itemi'}
 		},
 		Paikat = {
 			vector3(17.892114639282,-1111.5885009766,29.797023773193)
 		}
 	},
          itemikauppa2 = { --Esimerkki kuinka lisätä kauppa
-		kaupantyyppi = {'itemi'}, -- tai {'ase'},
 		Itemit = {
-			--{itemi  = 'luotiliivi', hinta = 200,  texti = 'luotiliivi'}
-                        --{itemi  = 'luotiliivi2', hinta = 300,  texti = 'luotiliivi2'}
+			--	{itemi  = 'luotiliivi', hinta = 200,  texti = 'luotiliivi', tyyppi = 'itemi'}
+                        --{itemi  = 'luotiliivi2', hinta = 200,  texti = 'luotiliivi2', tyyppi = 'itemi'}
 		},
 		Paikat = {
 			--vector3(17.892114639282,-1111.5885009766,29.797023773193)
