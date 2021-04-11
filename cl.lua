@@ -29,7 +29,6 @@ function kauppamenu(mikakauppa)
 			label = item.texti,
 			price = item.hinta,
 			itemii = item.itemi,
-			weaponName = item.itemi,
 			mitalaitetaa = item.tyyppi
 		})
 	end
