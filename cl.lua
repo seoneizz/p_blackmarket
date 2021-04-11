@@ -24,16 +24,16 @@ end)
 function kauppamenu(mikakauppa)
 	local elements = {}
 	for i=1, #clienttiii[mikakauppa].Itemit, 1 do
-		for i=1, #clienttiii[mikakauppa].kaupantyyppi, 1 do
-			local itemit = clienttiii[mikakauppa].Itemit[i]
-			table.insert(elements, {
-				label      = itemit.texti .. ' <span style="color: green;">$' .. itemit.hinta .. '</span>',
-				price      = itemit.hinta,
-				item      = itemit.itemi,
-				mitalaitetaa = clienttiii[mikakauppa].kaupantyyppi[i]
-			})
-		end
+		local item = clienttiii[mikakauppa].Itemit[i]
+		table.insert(elements, {
+			label = item.texti,
+			price = item.hinta,
+			itemii = item.itemi,
+			weaponName = item.itemi,
+			mitalaitetaa = item.tyyppi
+		})
 	end
+
 	ESX.UI.Menu.Open( 'default', GetCurrentResourceName(), 'kauppamenu',
   {
     title    = mikakauppa,
@@ -50,9 +50,9 @@ function kauppamenu(mikakauppa)
 	}}, function(data2, menu2)
 		if data2.current.value == 'kylla' then
 			if data.current.mitalaitetaa == 'ase' then
-				TriggerServerEvent("paskanen_kauppa:osta_ase", data.current.item, data.current.price)
+				TriggerServerEvent("paskanen_kauppa:osta_ase", data.current.itemii, data.current.price)
 			else
-				TriggerServerEvent("paskanen_kauppa:osta_itemi", data.current.item, data.current.price)
+				TriggerServerEvent("paskanen_kauppa:osta_itemi", data.current.itemii, data.current.price)
 			end
 		end
 		ESX.UI.Menu.CloseAll()
@@ -76,7 +76,7 @@ Citizen.CreateThread(function()
 							if GetClockHours() < 6 then
 							    kauppamenu(k)
 							else
-                                                          ESX.ShowNotification("Kauppa on auki vain öisin!")
+                                 ESX.ShowNotification("Kauppa on auki vain öisin!")
 						    end
 						else
 							kauppamenu(k)
