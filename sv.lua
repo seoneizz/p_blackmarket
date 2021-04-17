@@ -5,21 +5,21 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 --itemin tyypit on ase tai itemi
 
 local serverii = {
-	asekauppa = {
+	Pistoolikauppa = {
 		Itemit = {
-			{itemi  = 'WEAPON_KNIFE', hinta = 1000, texti = 'Puukko', tyyppi = 'ase'},
-			{itemi  = 'WEAPON_PISTOL', hinta = 3000, texti = 'Pistooli', tyyppi = 'ase'}
+			{itemi  = 'WEAPON_PISTOL50', hinta = 35000, texti = 'Pistooli 50', tyyppi = 'ase'},
+			{itemi  = 'WEAPON_PISTOL', hinta = 28000, texti = 'Pistooli', tyyppi = 'ase'}
 		},
 		Paikat = {
-			vector3(21.596227645874,-1106.5979003906,29.797023773193)
+			vector3(902.25885009766,-1672.7186279297,47.357490539551)
 		}
 	},
-	itemikauppa = {
+	Puukkokauppa = {
 		Itemit = {
-			{itemi  = 'luotiliivi', hinta = 200,  texti = 'luotiliivi', tyyppi = 'itemi'}
+			{itemi  = 'WEAPON_KNIFE', hinta = 200,  texti = 'Puukko', tyyppi = 'ase'}
 		},
 		Paikat = {
-			vector3(17.892114639282,-1111.5885009766,29.797023773193)
+			vector3(510.60913085938,-1951.3472900391,24.98509979248)
 		}
 	},
          itemikauppa2 = { --Esimerkki kuinka lisätä kauppa
@@ -34,37 +34,37 @@ local serverii = {
 }
 
 
-RegisterServerEvent('paskanen_kauppa:serveristaclienttii')
-AddEventHandler("paskanen_kauppa:serveristaclienttii", function()
-  TriggerClientEvent('paskanen_kauppa:serveristaclienttiiclient', source, serverii)
+RegisterServerEvent('blackweashop:serveristaclienttii')
+AddEventHandler("blackweashop:serveristaclienttii", function()
+  TriggerClientEvent('blackweashop:serveristaclienttiiclient', source, serverii)
 end)
 
 
-RegisterServerEvent('paskanen_kauppa:osta_ase')
-AddEventHandler("paskanen_kauppa:osta_ase", function(aseennimi, hinta)
+RegisterServerEvent('blackweashop:osta_ase')
+AddEventHandler("blackweashop:osta_ase", function(aseennimi, hinta)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
 	if xPlayer.hasWeapon(aseennimi) then
-		TriggerClientEvent('esx:showNotification', source, '~r~Sinulla on jo tämä ase')
+		TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'inform', text = 'Sinulla on jo tämä ase!'})
 	else
 		if xPlayer.getAccount('black_money').money >= hinta then
 			xPlayer.removeAccountMoney('black_money', hinta)
 			xPlayer.addWeapon(aseennimi, 100)
 		else
-			TriggerClientEvent('esx:showNotification', source, '~r~Sinulla ei ole riittävästi likaista!')
+			TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'inform', text = 'Sinulla ei ole riittävästi likaista!'})
 		end
 	end
 end)
 
-RegisterServerEvent('paskanen_kauppa:osta_itemi')
-AddEventHandler("paskanen_kauppa:osta_itemi", function(iteminnimi, hinta)
+RegisterServerEvent('blackweashop:osta_itemi')
+AddEventHandler("blackweashop:osta_itemi", function(iteminnimi, hinta)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
 	if xPlayer.getAccount('black_money').money >= hinta then
 		xPlayer.removeAccountMoney('black_money', hinta)
 		xPlayer.addInventoryItem(iteminnimi, 1)
-		xPlayer.showNotification("~g~Maksu suoritettu:~r~ $" ..hinta)
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'success', text = 'Maksu suoritettu: $'..hinta})
 	else
-		xPlayer.showNotification("~r~Sinulla ei ole riittävästi likaista!")
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'error', text = 'Sinulla ei ole riittävästi likaista'})
 	end
 end)
