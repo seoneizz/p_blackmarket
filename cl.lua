@@ -27,8 +27,9 @@ CreateThread(function()
         Wait(6)
 		for k,v in pairs(clienttiii) do
 			for i=1, #v.Paikat, 1 do
-				if GetDistanceBetweenCoords(playerposition, v.Paikat[i], true) < config.distance then
-					notif("Paina ~INPUT_CONTEXT~ ostaaksesi jotain kaupasta")
+				local shops = v.Paikat[i]
+				if GetDistanceBetweenCoords(playerposition, shops, true) < config.distance then
+					text3d(shops.x,shops.y,shops.z,"Paina ~g~[~w~E~g~]~w~ ostaaksesi jotain kaupasta")
 					if IsControlJustReleased(0, 38) then
 						if config.onlynight then
 							if hours < 6 then
@@ -48,10 +49,20 @@ end)
 
 
 --Functiot
-function notif(text)
-    AddTextEntryByHash(0x98237489, text)
-    BeginTextCommandDisplayHelp('esxHelpNotification')
-    EndTextCommandDisplayHelp(0, false, true, -1)
+function text3d(x,y,z, text)
+	local onScreen, x, y = World3dToScreen2d(x, y, z)
+	if onScreen and text and x and y and z  then
+		SetTextScale(0.35, 0.35)
+		SetTextOutline()
+		SetTextFont(4)
+		SetTextEntry('STRING')
+		SetTextCentre(1)
+		SetTextColour(255, 255, 255, 215)
+		AddTextComponentString(text)
+		DrawText(x, y)
+		local factor = (string.len(text)) / 410
+		DrawRect(x, y+0.012, 0.015+ factor, 0.03, 18, 18, 18, 70)
+	end
 end
 
 function shopmenu(mikakauppa)
