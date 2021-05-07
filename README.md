@@ -1,3 +1,3 @@
 # p_blackmarket
 
-Ase ja itemi kaupap samassa
+Ase ja itemi kauppa samassa ``fixed by AxU```
