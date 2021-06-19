@@ -69,12 +69,14 @@ function shopmenu(mikakauppa)
 	local elements = {}
 	for i=1, #clienttiii[mikakauppa].Itemit, 1 do
 		local item = clienttiii[mikakauppa].Itemit[i]
+		local kaupan_tyyppi = clienttiii[mikakauppa].likanen --true/false
 		local price = item.hinta
 		table.insert(elements, {
 			label = item.texti..' <span style="color:green;">$'..price..'</span>',
 			price = price,
 			itemii = item.itemi,
-			mitalaitetaa = item.tyyppi
+			mitalaitetaa = item.tyyppi,
+			kaupan_tyyppi = kaupan_tyyppi
 		})
 	end
 
@@ -94,9 +96,9 @@ function shopmenu(mikakauppa)
 	}}, function(data2, menu2)
 		if data2.current.value == 'kylla' then
 			if data.current.mitalaitetaa == 'ase' then
-				TriggerServerEvent("blackweashop:osta_ase", data.current.itemii, data.current.price)
+				TriggerServerEvent("blackweashop:osta_ase", data.current.itemii, data.current.price, data.current.kaupan_tyyppi)
 			else
-				TriggerServerEvent("blackweashop:osta_itemi", data.current.itemii, data.current.price)
+				TriggerServerEvent("blackweashop:osta_itemi", data.current.itemii, data.current.price, data.current.kaupan_tyyppi)
 			end
 		end
 		ESX.UI.Menu.CloseAll()
