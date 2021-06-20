@@ -60,7 +60,7 @@ AddEventHandler("blackweashop:osta_ase", function(aseennimi, hinta, likaisella)
 			end
 		else
 			if xPlayer.getMoney() >= hinta then
-				xPlayer.removeMoney(price)
+				xPlayer.removeMoney(hinta)
 				xPlayer.addWeapon(aseennimi, 100)
 				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'success', text = 'Maksu suoritettu: $'..hinta})
 			else
@@ -84,7 +84,7 @@ AddEventHandler("blackweashop:osta_itemi", function(iteminnimi, hinta, likaisell
 		end
 	else
 		if xPlayer.getMoney() >= hinta then
-			xPlayer.removeMoney(price)
+			xPlayer.removeMoney(hinta)
 			xPlayer.addInventoryItem(iteminnimi, 1)
 			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'success', text = 'Maksu suoritettu: $'..hinta})
 		else
