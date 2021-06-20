@@ -27,7 +27,7 @@ local serverii = {
     itemikauppa2 = { --Esimerkki kuinka lisätä kauppa
 		likanen = false,
 		Itemit = {
-			--{itemi  = 'luotiliivi', hinta = 200,  texti = 'luotiliivi', tyyppi = 'itemi'}
+			{itemi  = 'luotiliivi', hinta = 200,  texti = 'luotiliivi', tyyppi = 'itemi'}
             --{itemi  = 'luotiliivi2', hinta = 200,  texti = 'luotiliivi2', tyyppi = 'itemi'}
 		},
 		Paikat = {
