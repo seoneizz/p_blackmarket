@@ -23,15 +23,15 @@ CreateThread(function()
 	Wait(2000)
     while true do
 		local playerposition = GetEntityCoords(PlayerPedId())
-		local hours = GetClockHours()
         Wait(6)
 		for k,v in pairs(clienttiii) do
 			for i=1, #v.Paikat, 1 do
 				local shops = v.Paikat[i]
-				if GetDistanceBetweenCoords(playerposition, shops, true) < config.distance then
+				if #(playerposition - shops) < config.distance then
 					text3d(shops.x,shops.y,shops.z,"Paina ~g~[~w~E~g~]~w~ ostaaksesi jotain kaupasta")
 					if IsControlJustReleased(0, 38) then
 						if config.onlynight then
+							local hours = GetClockHours()
 							if hours < 6 then
 							    shopmenu(k)
 							else
