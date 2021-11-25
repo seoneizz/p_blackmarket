@@ -2,93 +2,79 @@ ESX = nil
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
---itemin tyypit on ase tai itemi
-
-local serverii = {
-	Pistoolikauppa = {
-		likanen = false,
-		Itemit = {
-			{itemi  = 'WEAPON_PISTOL50', hinta = 35000, texti = 'Pistooli 50', tyyppi = 'ase'},
-			{itemi  = 'WEAPON_PISTOL', hinta = 28000, texti = 'Pistooli', tyyppi = 'ase'}
-		},
-		Paikat = {
-			vector3(902.25885009766,-1672.7186279297,47.357490539551)
-		}
-	},
-	Puukkokauppa = {
-		likanen = true,
-		Itemit = {
-			{itemi  = 'WEAPON_KNIFE', hinta = 200,  texti = 'Puukko', tyyppi = 'ase'}
-		},
-		Paikat = {
-			vector3(510.60913085938,-1951.3472900391,24.98509979248)
-		}
-	},
-    itemikauppa2 = { --Esimerkki kuinka lisätä kauppa
-		likanen = false,
-		Itemit = {
-			{itemi  = 'luotiliivi', hinta = 200,  texti = 'luotiliivi', tyyppi = 'itemi'}
-            --{itemi  = 'luotiliivi2', hinta = 200,  texti = 'luotiliivi2', tyyppi = 'itemi'}
-		},
-		Paikat = {
-			--vector3(17.892114639282,-1111.5885009766,29.797023773193)
-		}
-	}
-}
-
 
 RegisterServerEvent('blackweashop:serveristaclienttii')
 AddEventHandler("blackweashop:serveristaclienttii", function()
-  TriggerClientEvent('blackweashop:serveristaclienttiiclient', source, serverii)
+  	TriggerClientEvent('blackweashop:serveristaclienttiiclient', source, {
+		["Pistoolikauppa"] = {
+			blackMoney = false,
+			items = {
+				{name  = 'WEAPON_PISTOL50', price = 35000, label = 'Pistooli 50', type = 'weapon'},
+				{name  = 'WEAPON_PISTOL', price = 28000, label = 'Pistooli', type = 'weapon'}
+			},
+			Locations = {
+				vector3(902.25885009766,-1672.7186279297,47.357490539551)
+			}
+		},
+		["Puukkokauppa"] = {
+			blackMoney = true,
+			items = {
+				{name  = 'WEAPON_KNIFE', price = 200,  label = 'Puukko', type = 'weapon'}
+			},
+			Locations = {
+				vector3(510.60913085938,-1951.3472900391,24.98509979248)
+			}
+		}
+  	})
 end)
 
 
-RegisterServerEvent('blackweashop:osta_ase')
-AddEventHandler("blackweashop:osta_ase", function(aseennimi, hinta, likaisella)
+RegisterServerEvent('blackweashop:buy_weapon')
+AddEventHandler("blackweashop:buy_weapon", function(weaponName, price, blackMoney)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
-	if xPlayer.hasWeapon(aseennimi) then
-		TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = 'Sinulla on jo tämä ase!'})
+	if xPlayer.hasWeapon(weaponName) then
+		TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'error', text = 'Sinulla on jo tämä ase!'})
 	else
-		if likaisella then
-			if xPlayer.getAccount('black_money').money >= hinta then
-				xPlayer.removeAccountMoney('black_money', hinta)
-				xPlayer.addWeapon(aseennimi, 100)
-				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'success', text = 'Maksu suoritettu: $'..hinta})
+		if blackMoney then
+			if xPlayer.getAccount('black_money').money >= price then
+				xPlayer.removeAccountMoney('black_money', price)
+				xPlayer.addWeapon(weaponName, 100)
+				TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'success', text = 'Maksu suoritettu: $'..price})
 			else
-				TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'inform', text = 'Sinulla ei ole riittävästi likaista!'})
+				TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'inform', text = 'Sinulla ei ole riittävästi likaista!'})
 			end
 		else
-			if xPlayer.getMoney() >= hinta then
-				xPlayer.removeMoney(hinta)
-				xPlayer.addWeapon(aseennimi, 100)
-				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'success', text = 'Maksu suoritettu: $'..hinta})
+			if xPlayer.getMoney() >= price then
+				xPlayer.removeMoney(price)
+				xPlayer.addWeapon(weaponName, 100)
+				TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'success', text = 'Maksu suoritettu: $'..price})
 			else
-				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'error', text = 'Sinulla ei ole riittävästi likaista'})
+				TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'error', text = 'Sinulla ei ole riittävästi likaista'})
 			end
 		end
 	end
 end)
 
-RegisterServerEvent('blackweashop:osta_itemi')
-AddEventHandler("blackweashop:osta_itemi", function(iteminnimi, hinta, likaisella)
+RegisterServerEvent('blackweashop:buy_item')
+AddEventHandler("blackweashop:buy_item", function(itemName, price, blackMoney)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
-	if likaisella then
-		if xPlayer.getAccount('black_money').money >= hinta then
-			xPlayer.removeAccountMoney('black_money', hinta)
-			xPlayer.addInventoryItem(iteminnimi, 1)
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'success', text = 'Maksu suoritettu: $'..hinta})
+	if blackMoney then
+		if xPlayer.getAccount('black_money').money >= price then
+			xPlayer.removeAccountMoney('black_money', price)
+			xPlayer.addInventoryItem(itemName, 1)
+			TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'success', text = 'Maksu suoritettu: $'..price})
 		else
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'error', text = 'Sinulla ei ole riittävästi likaista'})
+			TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'error', text = 'Sinulla ei ole riittävästi likaista'})
 		end
 	else
-		if xPlayer.getMoney() >= hinta then
-			xPlayer.removeMoney(hinta)
-			xPlayer.addInventoryItem(iteminnimi, 1)
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'success', text = 'Maksu suoritettu: $'..hinta})
+		if xPlayer.getMoney() >= price then
+			xPlayer.removeMoney(price)
+			xPlayer.addInventoryItem(itemName, 1)
+			TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'success', text = 'Maksu suoritettu: $'..price})
 		else
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer, { type = 'error', text = 'Sinulla ei ole riittävästi rahaa'})
+			TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'error', text = 'Sinulla ei ole riittävästi rahaa'})
 		end
 	end
 end)

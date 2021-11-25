@@ -4,14 +4,14 @@ local config   = {}
 
 config = {
 	  distance = 1.2,
-	  menunpos = 'bottom-right', -- Menun sijainti
+	  menunpos = 'bottom-right', -- Menu POS
 	  onlynight = false, --Vain öisin auki (true = kyllä, false= ei)
 }
 
 
 RegisterNetEvent('blackweashop:serveristaclienttiiclient')
-AddEventHandler('blackweashop:serveristaclienttiiclient', function(paikatserveris)
-  clienttiii = paikatserveris
+AddEventHandler('blackweashop:serveristaclienttiiclient', function(serverii)
+  clienttiii = serverii
 end)
 
 CreateThread(function()
@@ -19,14 +19,16 @@ CreateThread(function()
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 		Wait(10)
 	end
+
 	TriggerServerEvent('blackweashop:serveristaclienttii')
 	Wait(2000)
+
     while true do
 		local playerposition = GetEntityCoords(PlayerPedId())
         Wait(6)
 		for k,v in pairs(clienttiii) do
-			for i=1, #v.Paikat, 1 do
-				local shops = v.Paikat[i]
+			for i=1, #v.Locations, 1 do
+				local shops = v.Locations[i]
 				if #(playerposition - shops) < config.distance then
 					text3d(shops.x,shops.y,shops.z,"Paina ~g~[~w~E~g~]~w~ ostaaksesi jotain kaupasta")
 					if IsControlJustReleased(0, 38) then
@@ -45,6 +47,7 @@ CreateThread(function()
 			end
 		end
 	end
+
 end)
 
 
@@ -65,47 +68,47 @@ function text3d(x,y,z, text)
 	end
 end
 
-function shopmenu(mikakauppa)
+function shopmenu(shopName)
 	local elements = {}
-	for i=1, #clienttiii[mikakauppa].Itemit, 1 do
-		local item = clienttiii[mikakauppa].Itemit[i]
-		local kaupan_tyyppi = clienttiii[mikakauppa].likanen --true/false
-		local price = item.hinta
+	local shop = clienttiii[shopName]
+	for i=1, #shop.items, 1 do
+		local item = shop.items[i]
+		local price = item.price
 		table.insert(elements, {
-			label = item.texti..' <span style="color:green;">$'..price..'</span>',
+			label = item.label..' <span style="color:green;">$'..price..'</span>',
 			price = price,
-			itemii = item.itemi,
-			mitalaitetaa = item.tyyppi,
-			kaupan_tyyppi = kaupan_tyyppi
+			item = item.name,
+			itemType = item.type,
+			blackMoney = shop.blackMoney
 		})
 	end
 
-	ESX.UI.Menu.Open( 'default', GetCurrentResourceName(), 'shopmenu',
-  {
-    title    = mikakauppa,
-    align = config.menunpos,
-    elements = elements
-  },
-  function(data, menu) 
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'shop_confirm', {
-		title    = "Oletko varma?",
-		align    = config.menunpos,
-		elements = {
-			{label = 'Ei',  value = 'ei'},
-			{label = 'Kyllä', value = 'kylla'}
-	}}, function(data2, menu2)
-		if data2.current.value == 'kylla' then
-			if data.current.mitalaitetaa == 'ase' then
-				TriggerServerEvent("blackweashop:osta_ase", data.current.itemii, data.current.price, data.current.kaupan_tyyppi)
-			else
-				TriggerServerEvent("blackweashop:osta_itemi", data.current.itemii, data.current.price, data.current.kaupan_tyyppi)
+	ESX.UI.Menu.Open( 'default', GetCurrentResourceName(), 'shopmenu', {
+		title    = shopName,
+		align = config.menunpos,
+		elements = elements
+  	},
+  	function(data, menu) 
+		ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'shop_confirm', {
+			title    = "Oletko varma?",
+			align    = config.menunpos,
+			elements = {
+				{label = 'Ei',  value = false},
+				{label = 'Kyllä', value = true}
+			}
+		}, function(data2, menu2)
+			if data2.current.value then
+				if data.current.itemType == 'weapon' then
+					TriggerServerEvent("blackweashop:buy_weapon", data.current.item, data.current.price, data.current.blackMoney)
+				else
+					TriggerServerEvent("blackweashop:buy_item", data.current.item, data.current.price, data.current.blackMoney)
+				end
 			end
-		end
-		ESX.UI.Menu.CloseAll()
-	end, function(data2, menu2)
-		menu2.close()
+			ESX.UI.Menu.CloseAll()
+		end, function(data2, menu2)
+			menu2.close()
+		end)
+	end, function(data, menu)
+		menu.close()
 	end)
-end, function(data, menu)
-	menu.close()
-end)
 end
