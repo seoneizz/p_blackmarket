@@ -52,7 +52,7 @@ RegisterNetEvent('p_shop:buy', function(name, price, blackMoney)
 
 	if not blackMoney and xPlayer.getMoney() >= price then
 		xPlayer.removeMoney(price)
-	else if blackMoney and xPlayer.getAccount('black_money').money >= price then
+	elseif blackMoney and xPlayer.getAccount('black_money').money >= price then
 		xPlayer.removeAccountMoney('black_money', price)
 	else
 		return TriggerClientEvent('mythic_notify:client:SendAlert', _source, { type = 'error', text = 'You do not have enough money'})
