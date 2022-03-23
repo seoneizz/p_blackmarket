@@ -34,7 +34,7 @@ CreateThread(function()
 						text3d(shops, "Paina ~g~[~w~E~g~]~w~ ostaaksesi jotain kaupasta")
 	
 						if IsControlJustReleased(0, 38) then
-							if not config.onlynight or GetClockHours() =< 6 then 
+							if not config.onlynight or GetClockHours() <= 6 then 
 								return shopmenu(shopName)
 							end
 	
