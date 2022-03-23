@@ -35,10 +35,10 @@ CreateThread(function()
 	
 						if IsControlJustReleased(0, 38) then
 							if not config.onlynight or GetClockHours() <= 6 then 
-								return shopmenu(shopName)
+								shopmenu(shopName)
+							else
+								exports['mythic_notify']:DoHudText('inform', 'Kauppa on auki vain öisin!')		
 							end
-	
-							exports['mythic_notify']:DoHudText('inform', 'Kauppa on auki vain öisin!')
 						end
 					else
 						Wait(600)
